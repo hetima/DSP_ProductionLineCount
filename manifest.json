@@ -1,0 +1,7 @@
+{
+    "name": "ProductionLineCount",
+    "description": "Display how many facilities are operating on a single production line and maximum number that won't get stuck.",
+    "version_number": "1.0.0",
+    "dependencies": [],
+    "website_url": "https://github.com/hetima/DSP_ProductionLineCount"
+}
