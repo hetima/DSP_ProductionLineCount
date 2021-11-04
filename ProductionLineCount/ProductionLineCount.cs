@@ -76,8 +76,7 @@ namespace ProductionLineCountMod
                 itemCount = Mathf.Max(itemCount, assemblerComponent.productCounts[k]);
             }
             //1台あたりの1分間の生産量or消費量 補正なし speed=10,000
-            float perMin = itemCount * (60 / (timeSpend / (60 * 10000)));
-
+            float perMin = itemCount * (60 / ((float)timeSpend / (60 * 10000)));
 
             ItemProto itemProto = LDB.items.Select((int)assemblerWindow.factory.entityPool[assemblerComponent.entityId].protoId);
             if (itemProto != null)
