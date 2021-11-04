@@ -23,6 +23,9 @@ __下__ : 素材/生成物が詰まらない最大の設置可能数。計算対
 
 ## Release Notes
 
+### v1.0.1
+- fix wrong calculation for Magnet / 磁石の計算が間違っていたのを修正
+
 ### v1.0.0
 
 - Initial Release
