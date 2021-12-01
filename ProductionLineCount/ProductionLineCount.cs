@@ -262,6 +262,7 @@ namespace ProductionLineCountMod
                 Text powerText = assemblerWindow.powerText;
                 Text stateText = assemblerWindow.stateText;
                 float yDistance = stateText.rectTransform.localPosition.y - powerText.rectTransform.localPosition.y;
+                yDistance -= yDistance > 0 ? 4 : -4;
                 numText = Object.Instantiate<Text>(stateText, stateText.transform.parent);
                 maxText = Object.Instantiate<Text>(stateText, stateText.transform.parent);
                 Vector3 pos = numText.rectTransform.localPosition;
