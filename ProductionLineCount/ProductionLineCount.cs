@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace ProductionLineCountMod
 {
-    [BepInPlugin(__GUID__, __NAME__, "1.0.0")]
+    [BepInPlugin(__GUID__, __NAME__, "1.0.2")]
     public class ProductionLineCount : BaseUnityPlugin
     {
         public const string __NAME__ = "ProductionLineCount";
