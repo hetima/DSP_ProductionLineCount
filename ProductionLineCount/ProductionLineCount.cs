@@ -272,6 +272,9 @@ namespace ProductionLineCountMod
                 maxText.rectTransform.localPosition = pos;
                 numText.text = "";
                 maxText.text = "";
+
+                RectTransform cpRect = assemblerWindow.copyButton.transform as RectTransform;
+                cpRect.anchoredPosition = new Vector2(-330f, 6f);
             }
 
 
