@@ -26,6 +26,7 @@ namespace ProductionLineCountMod
 
         public static Text numText;
         public static Text maxText;
+        public static Text maxStackedText;
         public static Text[] requireText;
         public static Text[] productText;
 
@@ -35,6 +36,7 @@ namespace ProductionLineCountMod
         {
             numText.text = "";
             maxText.text = "";
+            maxStackedText.text = "";
             for (int i = 0; i < requireText.Length; i++)
             {
                 requireText[i].text = "";
@@ -78,10 +80,13 @@ namespace ProductionLineCountMod
             int timeSpend = assemblerComponent.timeSpend; //timeSpend = recipeProto.TimeSpend * 10000 // 秒数 * 60 * 10000
             //int realTime = timeSpend / speed; // 秒数 * 60
             //1回の生産量or消費量
-            int itemCount = 0;
+            int itemCount;
+            int rItemCount = 0;
+            int pItemCount = 0;
+            float prRate = 1f;
             for (int k = 0; k < assemblerComponent.requireCounts.Length; k++)
             {
-                itemCount = Mathf.Max(itemCount, assemblerComponent.requireCounts[k]);
+                rItemCount = Mathf.Max(rItemCount, assemblerComponent.requireCounts[k]);
                 if (k < requireText.Length)
                 {
                     float x = assemblerWindow.servingGroup.localPosition.x - 160f;
@@ -91,7 +96,7 @@ namespace ProductionLineCountMod
             }
             for (int k = 0; k < assemblerComponent.productCounts.Length; k++)
             {
-                itemCount = Mathf.Max(itemCount, assemblerComponent.productCounts[k]);
+                pItemCount = Mathf.Max(pItemCount, assemblerComponent.productCounts[k]);
                 if (k < productText.Length)
                 {
                     float x = assemblerWindow.recipeGroup.localPosition.x - 134f;
@@ -99,33 +104,57 @@ namespace ProductionLineCountMod
                     productText[k].text = assemblerComponent.productCounts[k].ToString();
                 }
             }
-
-            //1台あたりの1分間の生産量or消費量 補正なし speed=10,000
+            
+            //1台あたりの1分間の生産量or消費量 補正なしspeed=10,000
+            itemCount = Mathf.Max(rItemCount, pItemCount);
             float perMin = itemCount * (60 / ((float)timeSpend / (60 * 10000)));
+
+            //スタック数を考慮
+            int stationPilerLevel = GameMain.history.stationPilerLevel;
+            if (stationPilerLevel > 1)
+            {
+                if (pItemCount > 0)
+                {
+                    prRate = (float)rItemCount / (float)pItemCount;
+                    if (prRate < 1f)
+                    {
+                        prRate = 1f;
+                    }
+                    if ((float)stationPilerLevel < prRate)
+                    {
+                        prRate = (float)stationPilerLevel;
+                    }
+                }
+            }
 
             ItemProto itemProto = LDB.items.Select((int)assemblerWindow.factory.entityPool[assemblerComponent.entityId].protoId);
             if (itemProto != null)
             {
                 string maxString;
+                string maxStringStacked;
                 string numStringFormat;
                 //最大可能設置数
                 float maxFacilities = beltCap / perMin;
+                float maxFacilitiesStacked = beltCap * prRate / perMin;
                 //実際の設置数
                 ERecipeType recipeType = itemProto.prefabDesc.assemblerRecipeType;
                 int cnt = FacilitiesCountInSameLine(assemblerWindow.factory, cargoPaths, assemblerComponent.recipeId, recipeType, out int a, out int b, out int c);
                 if (recipeType == ERecipeType.Smelt)
                 {
                     maxString = ((int)(maxFacilities)).ToString() + "/" + ((int)(maxFacilities / 2)).ToString();
+                    maxStringStacked = ((int)(maxFacilitiesStacked)).ToString() + "/" + ((int)(maxFacilitiesStacked / 2)).ToString();
                     numStringFormat = "{0}/{1}";
                 }
                 else if (recipeType == ERecipeType.Assemble)
                 {
                     maxString = ((int)(maxFacilities / 0.75)).ToString() + "/" + ((int)(maxFacilities)).ToString() + "/" + ((int)(maxFacilities / 1.5)).ToString();
+                    maxStringStacked = ((int)(maxFacilitiesStacked / 0.75)).ToString() + "/" + ((int)(maxFacilitiesStacked)).ToString() + "/" + ((int)(maxFacilitiesStacked / 1.5)).ToString();
                     numStringFormat = "{0}/{1}/{2}";
                 }
                 else
                 {
                     maxString = ((int)(maxFacilities)).ToString();
+                    maxStringStacked = ((int)(maxFacilitiesStacked)).ToString();
                     numStringFormat = "{0}";
                 }
 
@@ -136,7 +165,11 @@ namespace ProductionLineCountMod
                     string cStr = c > 0 ? c.ToString() : "--";
                     numText.text = string.Format(numStringFormat, aStr, bStr, cStr);
                 }
-                maxText.text = beltLabel + maxString;
+                maxText.text = "max = " + beltLabel + maxString;
+                if (stationPilerLevel > 1)
+                {
+                    maxStackedText.text =  "stack x" + prRate.ToString("0.0") + " = " + beltLabel + maxStringStacked;
+                }
             }
 
             if (cargoPaths != null)
@@ -287,16 +320,22 @@ namespace ProductionLineCountMod
                 Text powerText = assemblerWindow.powerText;
                 Text stateText = assemblerWindow.stateText;
                 float yDistance = stateText.rectTransform.localPosition.y - powerText.rectTransform.localPosition.y;
-                yDistance -= yDistance > 0 ? 4 : -4;
+                yDistance -= yDistance > 0 ? 5 : -5;
                 numText = Object.Instantiate<Text>(stateText, stateText.transform.parent);
                 maxText = Object.Instantiate<Text>(stateText, stateText.transform.parent);
+                maxStackedText = Object.Instantiate<Text>(stateText, stateText.transform.parent);
                 Vector3 pos = numText.rectTransform.localPosition;
                 pos.y += yDistance;
                 numText.rectTransform.localPosition = pos;
                 pos.y += yDistance;
                 maxText.rectTransform.localPosition = pos;
+                pos.y += yDistance;
+                maxStackedText.rectTransform.localPosition = pos;
                 numText.text = "";
                 maxText.text = "";
+                maxStackedText.text = "";
+                maxText.color = new Color(0.58f, 0.58f, 0.58f, 0.65f);
+                maxStackedText.color = new Color(0.58f, 0.58f, 0.58f, 0.65f);
 
                 RectTransform cpRect = assemblerWindow.copyButton.transform as RectTransform;
                 cpRect.anchoredPosition = new Vector2(-330f, 6f);
@@ -309,7 +348,7 @@ namespace ProductionLineCountMod
                     txt_.gameObject.name = name_;
                     txt_.color = new Color(0.5f, 0.5f, 0.5f, 0.7f);
                     txt_.alignment = TextAnchor.MiddleLeft;
-                    (txt_.transform as RectTransform).sizeDelta = new Vector2(24f, 20f);
+                    txt_.rectTransform.sizeDelta = new Vector2(24f, 20f);
                     return txt_;
                 }
                 for (int i = 0; i < requireText.Length; i++)
@@ -320,6 +359,9 @@ namespace ProductionLineCountMod
                 {
                     productText[i] = CreateCountText("product-text-" + (i + 1).ToString());
                 }
+
+                //邪魔
+                assemblerWindow.transferTipText.gameObject.SetActive(false);
             }
 
 
