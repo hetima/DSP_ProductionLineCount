@@ -26,6 +26,8 @@ namespace ProductionLineCountMod
 
         public static Text numText;
         public static Text maxText;
+        public static Text[] requireText;
+        public static Text[] productText;
 
         public static int _lastAssemblerId = 0;
 
@@ -33,6 +35,16 @@ namespace ProductionLineCountMod
         {
             numText.text = "";
             maxText.text = "";
+            for (int i = 0; i < requireText.Length; i++)
+            {
+                requireText[i].text = "";
+            }
+            for (int i = 0; i < productText.Length; i++)
+            {
+                productText[i].text = "";
+            }
+
+
             if (assemblerWindow.assemblerId == 0 || assemblerWindow.factory == null)
             {
                 return;
@@ -70,11 +82,24 @@ namespace ProductionLineCountMod
             for (int k = 0; k < assemblerComponent.requireCounts.Length; k++)
             {
                 itemCount = Mathf.Max(itemCount, assemblerComponent.requireCounts[k]);
+                if (k < requireText.Length)
+                {
+                    float x = assemblerWindow.servingGroup.localPosition.x - 160f;
+                    requireText[k].transform.localPosition = new Vector3(x + 50 * k, -30f, 0f);
+                    requireText[k].text = assemblerComponent.requireCounts[k].ToString();
+                }
             }
             for (int k = 0; k < assemblerComponent.productCounts.Length; k++)
             {
                 itemCount = Mathf.Max(itemCount, assemblerComponent.productCounts[k]);
+                if (k < productText.Length)
+                {
+                    float x = assemblerWindow.recipeGroup.localPosition.x - 134f;
+                    productText[k].transform.localPosition = new Vector3(x + 64 * k, -34f, 0f);
+                    productText[k].text = assemblerComponent.productCounts[k].ToString();
+                }
             }
+
             //1台あたりの1分間の生産量or消費量 補正なし speed=10,000
             float perMin = itemCount * (60 / ((float)timeSpend / (60 * 10000)));
 
@@ -275,6 +300,26 @@ namespace ProductionLineCountMod
 
                 RectTransform cpRect = assemblerWindow.copyButton.transform as RectTransform;
                 cpRect.anchoredPosition = new Vector2(-330f, 6f);
+
+                requireText = new Text[4];
+                productText = new Text[2];
+
+                Text CreateCountText(string name_){
+                    Text txt_ = Object.Instantiate<Text>(numText, numText.transform.parent);
+                    txt_.gameObject.name = name_;
+                    txt_.color = new Color(0.5f, 0.5f, 0.5f, 0.7f);
+                    txt_.alignment = TextAnchor.MiddleLeft;
+                    (txt_.transform as RectTransform).sizeDelta = new Vector2(24f, 20f);
+                    return txt_;
+                }
+                for (int i = 0; i < requireText.Length; i++)
+                {
+                    requireText[i] = CreateCountText("require-text-" + (i + 1).ToString());
+                }
+                for (int i = 0; i < productText.Length; i++)
+                {
+                    productText[i] = CreateCountText("product-text-" + (i + 1).ToString());
+                }
             }
 
 
