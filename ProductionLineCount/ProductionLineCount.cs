@@ -179,7 +179,7 @@ namespace ProductionLineCountMod
                 {
                     maxStackedText.text =  "stack x" + prRate.ToString("0.0") + " = " + beltLabel + maxStringStacked;
                 }
-                maxOutputText.text = "maxOut = " + beltLabel + maxStringOutput;
+                maxOutputText.text = "OutOnly = " + beltLabel + maxStringOutput;
             }
 
             if (cargoPaths != null)
