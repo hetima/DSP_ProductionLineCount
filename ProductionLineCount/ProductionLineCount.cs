@@ -190,7 +190,7 @@ namespace ProductionLineCountMod
 
                         float x = assemblerWindow.servingGroup.localPosition.x - 160f - 10f;
                         requireText[k].transform.localPosition = new Vector3(x + 50 * k, -30f, 0f);
-                        requireText[k].text = "(" + ((int)maxFacilities2 / speed).ToString() + ")";
+                        requireText[k].text = "(" + ((int)(maxFacilities2 / speed)).ToString() + ")";
                     }
                 }
                 for (int k = 0; k < assemblerComponent.productCounts.Length; k++)
@@ -202,7 +202,7 @@ namespace ProductionLineCountMod
 
                         float x = assemblerWindow.recipeGroup.localPosition.x - 134f - 10f;
                         productText[k].transform.localPosition = new Vector3(x + 64 * k, -34f, 0f);
-                        productText[k].text = "(" + ((int)maxFacilities2 / speed).ToString() + ")";
+                        productText[k].text = "(" + ((int)(maxFacilities2 / speed)).ToString() + ")";
                     }
                 }
             }
