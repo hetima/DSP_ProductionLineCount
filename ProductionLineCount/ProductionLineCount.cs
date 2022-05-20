@@ -98,7 +98,7 @@ namespace ProductionLineCountMod
                 if (k < requireNumText.Length)
                 {
                     float x = assemblerWindow.servingGroup.localPosition.x - 160f;
-                    requireNumText[k].transform.localPosition = new Vector3(x + 50 * k, 38f, 0f);
+                    requireNumText[k].transform.localPosition = new Vector3(x + 50 * k, -30f, 0f);//38f
                     requireNumText[k].text = assemblerComponent.requireCounts[k].ToString();
                 }
             }
@@ -108,7 +108,7 @@ namespace ProductionLineCountMod
                 if (k < productNumText.Length)
                 {
                     float x = assemblerWindow.recipeGroup.localPosition.x - 136f;
-                    productNumText[k].transform.localPosition = new Vector3(x + 64 * k, 44f, 0f);
+                    productNumText[k].transform.localPosition = new Vector3(x + 64 * k, -34f, 0f);//44f
                     productNumText[k].text = assemblerComponent.productCounts[k].ToString();
                 }
             }
@@ -188,9 +188,9 @@ namespace ProductionLineCountMod
                         float perMin2 = assemblerComponent.requireCounts[k] * (60 / ((float)timeSpend / (60 * 10000)));
                         float maxFacilities2 = beltCap / perMin2;
 
-                        float x = assemblerWindow.servingGroup.localPosition.x - 160f - 10f;
-                        requireText[k].transform.localPosition = new Vector3(x + 50 * k, -30f, 0f);
-                        requireText[k].text = "(" + ((int)(maxFacilities2 / speed)).ToString() + ")";
+                        float x = assemblerWindow.servingGroup.localPosition.x - 164f;
+                        requireText[k].transform.localPosition = new Vector3(x + 50 * k, 38f, 0f);//-30f
+                        requireText[k].text = ((int)(maxFacilities2 / speed)).ToString();
                     }
                 }
                 for (int k = 0; k < assemblerComponent.productCounts.Length; k++)
@@ -200,9 +200,9 @@ namespace ProductionLineCountMod
                         float perMin2 = assemblerComponent.productCounts[k] * (60 / ((float)timeSpend / (60 * 10000)));
                         float maxFacilities2 = beltCap / perMin2;
 
-                        float x = assemblerWindow.recipeGroup.localPosition.x - 134f - 10f;
-                        productText[k].transform.localPosition = new Vector3(x + 64 * k, -34f, 0f);
-                        productText[k].text = "(" + ((int)(maxFacilities2 / speed)).ToString() + ")";
+                        float x = assemblerWindow.recipeGroup.localPosition.x - 138f;
+                        productText[k].transform.localPosition = new Vector3(x + 64 * k, 44f, 0f);//-34f
+                        productText[k].text = ((int)(maxFacilities2 / speed)).ToString();
                     }
                 }
             }
