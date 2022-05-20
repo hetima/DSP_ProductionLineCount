@@ -30,7 +30,7 @@ __3行目__ : 入力スタック数を考慮した最大値
 ## Release Notes
 
 ### v1.1.1
-- Show maximum number of facilities per item
+- Display the maximum number of individual item installations
 
 ### v1.1.0
 - Add maximum value considering item stack
